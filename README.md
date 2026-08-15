@@ -41,6 +41,6 @@ Cada valor vira uma linha própria, agrupada por natureza: **Produtos** (subtota
 ## 👥 Integrantes - 4DSM - FATEC VOTORANTIM
 
 ### 1. Guilherme Nobrega
-### 1. Guilherme Oto
-### 1. Gustavo Lima
-### 1. Daniel Fernando
+### 2. Guilherme Oto
+### 3. Gustavo Lima
+### 4. Daniel Fernando
