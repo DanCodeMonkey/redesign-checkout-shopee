@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout Shopee — Proposta de Redesign UX</title>
+
+<!-- Bootstrap 5 + Bootstrap Icons (CDN) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --laranja:#EE4D2D;
+  --laranja-escuro:#D73211;
+  --laranja-claro:#FFF3F0;
+  --verde:#26AA99;
+  --verde-claro:#EAF8F6;
+  --texto:#222222;
+  --texto-suave:#757575;
+  --linha:#EFEFEF;
+  --fundo:#F5F5F5;
+  --amarelo:#FFF7E6;
+}
+
+*{box-sizing:border-box}
+body{
+  font-family:'Roboto',system-ui,sans-serif;
+  background:var(--fundo);
+  color:var(--texto);
+  padding-bottom:110px;
+}
+.container-app{max-width:1100px}
+
+/* ---------- Topo ---------- */
+.topo{background:var(--laranja);color:#fff;padding:14px 0}
+.topo .logo{font-weight:900;font-size:26px;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.topo .divisor{width:1px;height:26px;background:rgba(255,255,255,.5)}
+.topo .titulo{font-size:19px;font-weight:400}
+.topo .seguro{font-size:12.5px;opacity:.95}
+
+/* ---------- MELHORIA 2: Stepper com iconografia ---------- */
+.stepper-wrap{
+  background:#fff;border-bottom:1px solid var(--linha);
+  position:sticky;top:0;z-index:1030;box-shadow:0 2px 6px rgba(0,0,0,.05);
+}
+.stepper{display:flex;padding:16px 0 12px;position:relative}
+.etapa{flex:1;text-align:center;position:relative;z-index:2}
+.etapa .bolha{
+  width:52px;height:52px;border-radius:50%;margin:0 auto 8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;background:#fff;border:2.5px solid #DEDEDE;color:#BDBDBD;
+  transition:.25s ease;
+}
+.etapa .nome{font-size:13.5px;font-weight:500;color:#9E9E9E;line-height:1.2}
+.etapa .apoio{font-size:11.5px;color:#BDBDBD;display:block;margin-top:2px}
+.etapa .num{
+  position:absolute;top:-4px;left:50%;margin-left:12px;
+  width:20px;height:20px;border-radius:50%;background:#DEDEDE;color:#fff;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+}
+/* estados */
+.etapa.feita .bolha{background:var(--verde-claro);border-color:var(--verde);color:var(--verde)}
+.etapa.feita .nome{color:var(--verde)}
+.etapa.feita .num{background:var(--verde)}
+.etapa.atual .bolha{
+  background:var(--laranja);border-color:var(--laranja);color:#fff;
+  box-shadow:0 0 0 6px rgba(238,77,45,.15);transform:scale(1.06);
+}
+.etapa.atual .nome{color:var(--laranja);font-weight:700}
+.etapa.atual .apoio{color:var(--laranja)}
+.etapa.atual .num{background:var(--laranja)}
+.trilho{
+  position:absolute;top:42px;left:12.5%;right:12.5%;height:4px;
+  background:#E8E8E8;border-radius:4px;z-index:1;
+}
+.trilho .preenchido{
+  height:100%;border-radius:4px;background:linear-gradient(90deg,var(--verde),var(--laranja));
+  width:50%;transition:width .5s ease;
+}
+
+/* ---------- Cartões de seção ---------- */
+.secao{background:#fff;border-radius:10px;margin-bottom:14px;overflow:hidden}
+.secao-topo{
+  display:flex;align-items:center;gap:10px;
+  padding:15px 18px;border-bottom:1px solid var(--linha);
+}
+.secao-topo .ico{
+  width:34px;height:34px;border-radius:9px;background:var(--laranja-claro);
+  color:var(--laranja);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;
+}
+.secao-topo h2{font-size:16px;font-weight:700;margin:0}
+.secao-topo .passo{font-size:11.5px;color:var(--texto-suave);font-weight:500}
+.secao-corpo{padding:16px 18px}
+
+/* ---------- Endereço ---------- */
+.endereco{display:flex;gap:12px;align-items:flex-start}
+.tag-padrao{
+  font-size:10.5px;font-weight:700;color:var(--laranja);
+  border:1px solid var(--laranja);border-radius:3px;padding:1px 5px;
+}
+
+/* ---------- Produtos ---------- */
+.loja{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500;margin-bottom:12px}
+.selo-loja{background:var(--laranja);color:#fff;font-size:10px;font-weight:700;padding:1px 5px;border-radius:2px}
+.produto{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--linha)}
+.produto img,.produto .thumb{
+  width:74px;height:74px;border-radius:8px;flex:none;object-fit:cover;
+  background:linear-gradient(135deg,#FFE3DB,#FFD1C4);
+  display:flex;align-items:center;justify-content:center;font-size:30px;color:var(--laranja);
+}
+.produto .nome{font-size:14px;line-height:1.35;margin:0 0 4px}
+.produto .variacao{font-size:12px;color:var(--texto-suave)}
+.preco-de{font-size:12.5px;color:#BDBDBD;text-decoration:line-through}
+.preco-por{font-size:15px;font-weight:700;color:var(--laranja)}
+.qtd-grupo{display:flex;align-items:center;border:1px solid #DEDEDE;border-radius:6px;overflow:hidden}
+.qtd-grupo button{border:0;background:#FAFAFA;width:28px;height:28px;line-height:1;color:var(--texto-suave)}
+.qtd-grupo button:hover{background:#F0F0F0;color:var(--laranja)}
+.qtd-grupo span{width:34px;text-align:center;font-size:13px;font-weight:500}
+
+/* ---------- Opções selecionáveis (frete / pagamento) ---------- */
+.opcao{
+  display:flex;gap:12px;align-items:center;width:100%;text-align:left;
+  border:1.5px solid #E6E6E6;background:#fff;border-radius:9px;padding:13px 14px;margin-bottom:10px;
+  transition:.18s ease;position:relative;
+}
+.opcao:hover{border-color:#FFB9A8;background:#FFFCFB}
+.opcao.ativa{border-color:var(--laranja);background:var(--laranja-claro)}
+.opcao .marca{
+  width:20px;height:20px;border-radius:50%;border:2px solid #C9C9C9;flex:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.opcao.ativa .marca{border-color:var(--laranja);background:var(--laranja)}
+.opcao.ativa .marca::after{content:"";width:7px;height:7px;border-radius:50%;background:#fff}
+.opcao .icone-op{font-size:22px;color:var(--texto-suave);width:28px;text-align:center}
+.opcao.ativa .icone-op{color:var(--laranja)}
+.opcao .rotulo{font-size:14px;font-weight:500;line-height:1.3}
+.opcao .detalhe{font-size:12px;color:var(--texto-suave);margin-top:2px}
+.selo-verde{background:var(--verde-claro);color:var(--verde);font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px}
+.selo-eco{background:#FFF7E6;color:#B26A00;font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px}
+
+/* ---------- MELHORIA 1: Cupons na mesma tela ---------- */
+.faixa-cupom{
+  background:linear-gradient(90deg,var(--laranja-claro),#fff);
+  border:1px dashed var(--laranja);border-radius:9px;padding:13px 15px;
+  display:flex;align-items:center;gap:12px;cursor:pointer;
+}
+.faixa-cupom .bi-ticket-perforated{font-size:22px;color:var(--laranja)}
+.cupom{
+  display:flex;align-items:stretch;border:1px solid #F0D8D1;border-radius:8px;
+  overflow:hidden;margin-bottom:10px;background:#fff;
+}
+.cupom.usado{border-color:var(--laranja);box-shadow:0 0 0 2px rgba(238,77,45,.12)}
+.cupom.bloqueado{opacity:.55}
+.cupom .lado{
+  width:88px;flex:none;background:var(--laranja);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:11px;text-align:center;padding:8px 4px;line-height:1.25;
+}
+.cupom.frete .lado{background:var(--verde)}
+.cupom .lado strong{font-size:15px;display:block}
+.cupom .miolo{flex:1;padding:10px 12px}
+.cupom .miolo .t{font-size:13.5px;font-weight:700;line-height:1.25}
+.cupom .miolo .s{font-size:11.5px;color:var(--texto-suave);margin-top:2px}
+.cupom .acao{display:flex;align-items:center;padding-right:10px}
+.pill-auto{
+  background:var(--verde);color:#fff;font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;
+}
+
+/* ---------- MELHORIA 3: Resumo discriminado ---------- */
+.resumo{position:sticky;top:118px}
+.linha-resumo{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;padding:7px 0}
+.linha-resumo .rot{color:var(--texto-suave);display:flex;align-items:center;gap:5px}
+.linha-resumo .val{font-weight:500}
+.linha-resumo.desconto .rot,.linha-resumo.desconto .val{color:var(--verde);font-weight:600}
+.grupo-resumo{border-bottom:1px dashed #E6E6E6;padding:4px 0}
+.grupo-titulo{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:#9E9E9E;margin:12px 0 2px;
+}
+.total-linha{display:flex;justify-content:space-between;align-items:baseline;padding-top:12px}
+.total-linha .rot{font-size:15px;font-weight:700}
+.total-linha .val{font-size:26px;font-weight:900;color:var(--laranja);letter-spacing:-.5px}
+.economia{
+  background:var(--verde-claro);color:var(--verde);border-radius:8px;
+  padding:9px 12px;font-size:12.5px;font-weight:600;display:flex;gap:7px;align-items:center;
+}
+.info-ico{color:#BDBDBD;font-size:13px;cursor:help}
+
+/* ---------- Barra fixa ---------- */
+.barra-fixa{
+  position:fixed;left:0;right:0;bottom:0;background:#fff;z-index:1040;
+  border-top:1px solid var(--linha);box-shadow:0 -3px 14px rgba(0,0,0,.08);padding:11px 0;
+}
+.btn-pedido{
+  background:var(--laranja);color:#fff;border:0;border-radius:8px;
+  font-size:16px;font-weight:700;padding:13px 44px;min-width:230px;transition:.18s;
+}
+.btn-pedido:hover:not(:disabled){background:var(--laranja-escuro);color:#fff}
+.btn-pedido:disabled{background:#E0E0E0;color:#9E9E9E}
+
+/* ---------- Feedback ---------- */
+.pilha-toast{position:fixed;top:130px;right:18px;z-index:1080;width:330px;max-width:calc(100vw - 36px)}
+.toast-ux{
+  background:#fff;border-left:4px solid var(--verde);border-radius:8px;
+  box-shadow:0 6px 22px rgba(0,0,0,.16);padding:12px 14px;margin-bottom:10px;
+  display:flex;gap:11px;align-items:flex-start;animation:entra .3s ease;
+}
+.toast-ux.aviso{border-left-color:#F5A623}
+.toast-ux.erro{border-left-color:#E53935}
+@keyframes entra{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+
+/* ---------- Modo apresentação (destaque das melhorias) ---------- */
+.btn-melhorias{
+  position:fixed;right:18px;bottom:96px;z-index:1050;border-radius:30px;
+  background:#222;color:#fff;border:0;font-size:13px;font-weight:600;padding:11px 18px;
+  box-shadow:0 5px 18px rgba(0,0,0,.25);
+}
+body.destacar .alvo{
+  outline:3px dashed var(--laranja);outline-offset:5px;border-radius:12px;
+  animation:pulsa 1.6s infinite;
+}
+@keyframes pulsa{0%,100%{outline-color:var(--laranja)}50%{outline-color:#FFC5B6}}
+.etiqueta-melhoria{display:none}
+body.destacar .etiqueta-melhoria{
+  display:inline-flex;align-items:center;gap:6px;background:#222;color:#fff;
+  font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:10px;
+}
+
+.rodape{font-size:12px;color:#9E9E9E;text-align:center;padding:26px 12px 8px}
+
+@media (max-width:767.98px){
+  .etapa .bolha{width:44px;height:44px;font-size:20px}
+  .etapa .nome{font-size:11.5px}
+  .etapa .apoio,.etapa .num{display:none}
+  .trilho{top:36px}
+  .resumo{position:static}
+  .btn-pedido{width:100%;min-width:0;padding:13px}
+  .pilha-toast{top:auto;bottom:150px;right:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+:focus-visible{outline:3px solid #1E88E5;outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- ================= TOPO ================= -->
+<header class="topo">
+  <div class="container container-app d-flex align-items-center gap-3">
+    <div class="logo"><i class="bi bi-bag-heart-fill"></i> Shopee</div>
+    <div class="divisor d-none d-sm-block"></div>
+    <div class="titulo d-none d-sm-block">Finalizar compra</div>
+    <div class="ms-auto seguro"><i class="bi bi-shield-lock-fill"></i> Ambiente seguro</div>
+  </div>
+</header>
+
+<!-- ========= MELHORIA 2 — ETAPAS COM ICONOGRAFIA ========= -->
+<div class="stepper-wrap">
+  <div class="container container-app">
+    <div class="text-center"><span class="etiqueta-melhoria mt-2"><i class="bi bi-stars"></i> Melhoria 2 — etapas visíveis com iconografia</span></div>
+    <div class="stepper alvo" role="list" aria-label="Etapas da compra">
+      <div class="trilho" aria-hidden="true"><div class="preenchido" id="trilhoPreenchido"></div></div>
+
+      <div class="etapa feita" role="listitem" id="etapa1">
+        <div class="bolha"><i class="bi bi-bag-check-fill"></i></div>
+        <span class="num">1</span>
+        <div class="nome">Sacola</div>
+        <span class="apoio">3 itens conferidos</span>
+      </div>
+
+      <div class="etapa feita" role="listitem" id="etapa2">
+        <div class="bolha"><i class="bi bi-geo-alt-fill"></i></div>
+        <span class="num">2</span>
+        <div class="nome">Entrega</div>
+        <span class="apoio" id="apoioEntrega">Endereço confirmado</span>
+      </div>
+
+      <div class="etapa atual" role="listitem" id="etapa3" aria-current="step">
+        <div class="bolha"><i class="bi bi-credit-card-2-front-fill"></i></div>
+        <span class="num">3</span>
+        <div class="nome">Pagamento</div>
+        <span class="apoio">Você está aqui</span>
+      </div>
+
+      <div class="etapa" role="listitem" id="etapa4">
+        <div class="bolha"><i class="bi bi-check2-circle"></i></div>
+        <span class="num">4</span>
+        <div class="nome">Confirmação</div>
+        <span class="apoio">Falta pouco</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="container container-app mt-3">
+  <div class="row g-3">
+
+    <!-- ================= COLUNA PRINCIPAL ================= -->
+    <div class="col-lg-8">
+
+      <!-- ENDEREÇO -->
+      <section class="secao">
+        <div class="secao-topo">
+          <div class="ico"><i class="bi bi-geo-alt-fill"></i></div>
+          <div>
+            <h2>Endereço de entrega</h2>
+            <div class="passo">Etapa 2 · concluída</div>
+          </div>
+          <button class="btn btn-sm btn-outline-secondary ms-auto" type="button">Trocar</button>
+        </div>
+        <div class="secao-corpo">
+          <div class="endereco">
+            <i class="bi bi-house-door-fill" style="color:var(--laranja);font-size:20px"></i>
+            <div>
+              <div class="fw-bold mb-1">Ana Ribeiro · (11) 98842-1170 <span class="tag-padrao ms-1">Padrão</span></div>
+              <div class="text-secondary" style="font-size:13.5px">
+                Rua das Palmeiras, 482 — Apto 71, Bloco B<br>
+                Pinheiros, São Paulo — SP, 05422-010
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRODUTOS -->
+      <section class="secao">
+        <div class="secao-topo">
+          <div class="ico"><i class="bi bi-box-seam-fill"></i></div>
+          <div>
+            <h2>Itens do pedido</h2>
+            <div class="passo">Etapa 1 · concluída</div>
+          </div>
+          <span class="ms-auto text-secondary" style="font-size:13px" id="contadorItens">3 itens</span>
+        </div>
+        <div class="secao-corpo">
+          <div class="loja">
+            <span class="selo-loja">Mall</span> Baby Store Oficial
+            <i class="bi bi-chat-dots ms-2 text-secondary"></i>
+          </div>
+
+          <div class="produto">
+            <div class="thumb"><i class="bi bi-cart3"></i></div>
+            <div class="flex-fill">
+              <p class="nome">Carrinho de Bebê Compacto Reclinável 3 em 1</p>
+              <div class="variacao">Cor: Cinza Grafite</div>
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <span class="preco-de">R$ 699,90</span>
+                <span class="preco-por">R$ 489,90</span>
+                <div class="qtd-grupo ms-auto">
+                  <button type="button" onclick="mudarQtd(0,-1)" aria-label="Diminuir quantidade">−</button>
+                  <span id="qtd0">1</span>
+                  <button type="button" onclick="mudarQtd(0,1)" aria-label="Aumentar quantidade">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="produto">
+            <div class="thumb"><i class="bi bi-cup-straw"></i></div>
+            <div class="flex-fill">
+              <p class="nome">Kit 3 Mamadeiras Anticólica 260ml</p>
+              <div class="variacao">Cor: Rosa / Bico Silicone M</div>
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <span class="preco-por">R$ 79,90</span>
+                <div class="qtd-grupo ms-auto">
+                  <button type="button" onclick="mudarQtd(1,-1)" aria-label="Diminuir quantidade">−</button>
+                  <span id="qtd1">2</span>
+                  <button type="button" onclick="mudarQtd(1,1)" aria-label="Aumentar quantidade">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ENTREGA -->
+      <section class="secao">
+        <div class="secao-topo">
+          <div class="ico"><i class="bi bi-truck"></i></div>
+          <div>
+            <h2>Como você quer receber</h2>
+            <div class="passo">Etapa 2 · em revisão</div>
+          </div>
+        </div>
+        <div class="secao-corpo">
+          <button class="opcao ativa" type="button" data-frete="24.90" data-nome="Padrão" onclick="escolherFrete(this)">
+            <span class="marca"></span>
+            <i class="bi bi-box2 icone-op"></i>
+            <span class="flex-fill">
+              <span class="rotulo">Entrega padrão</span>
+              <span class="detalhe">Chega entre 22 e 26 de agosto</span>
+            </span>
+            <span class="text-end">
+              <span class="fw-bold" style="font-size:14px">R$ 24,90</span>
+              <span class="d-block selo-verde mt-1">Cupom cobre</span>
+            </span>
+          </button>
+
+          <button class="opcao" type="button" data-frete="34.90" data-nome="Expressa" onclick="escolherFrete(this)">
+            <span class="marca"></span>
+            <i class="bi bi-lightning-charge-fill icone-op"></i>
+            <span class="flex-fill">
+              <span class="rotulo">Entrega expressa</span>
+              <span class="detalhe">Chega entre 18 e 19 de agosto</span>
+            </span>
+            <span class="fw-bold" style="font-size:14px">R$ 34,90</span>
+          </button>
+
+          <button class="opcao" type="button" data-frete="0" data-nome="Retirada" onclick="escolherFrete(this)">
+            <span class="marca"></span>
+            <i class="bi bi-shop icone-op"></i>
+            <span class="flex-fill">
+              <span class="rotulo">Retirar em ponto parceiro</span>
+              <span class="detalhe">Drogaria Vida — Rua Teodoro Sampaio, 1120 · 1,2 km</span>
+            </span>
+            <span class="text-end">
+              <span class="fw-bold" style="font-size:14px">Grátis</span>
+              <span class="d-block selo-eco mt-1">Menos CO₂</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== MELHORIA 1 — CUPONS NA MESMA TELA ===== -->
+      <section class="secao alvo" id="blocoCupons">
+        <div class="secao-topo">
+          <div class="ico"><i class="bi bi-ticket-perforated-fill"></i></div>
+          <div>
+            <h2>Cupons e descontos</h2>
+            <div class="passo">Aplicados aqui, sem sair do checkout</div>
+          </div>
+          <span class="ms-auto selo-verde" id="seloCupons">1 ativo</span>
+        </div>
+        <div class="secao-corpo">
+          <span class="etiqueta-melhoria"><i class="bi bi-stars"></i> Melhoria 1 — cupom sem troca de tela</span>
+
+          <div class="row g-2 mb-3">
+            <div class="col">
+              <label for="campoCupom" class="visually-hidden">Digite um código de cupom</label>
+              <input id="campoCupom" class="form-control" placeholder="Digite um código (ex.: BEMVINDO15)" onkeydown="if(event.key==='Enter')aplicarDigitado()">
+            </div>
+            <div class="col-auto">
+              <button class="btn btn-outline-danger fw-semibold" type="button" onclick="aplicarDigitado()">Aplicar</button>
+            </div>
+          </div>
+
+          <div class="grupo-titulo mt-0">Disponíveis para este pedido</div>
+          <div id="listaCupons"></div>
+
+          <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:var(--amarelo);font-size:12.5px">
+            <i class="bi bi-coin" style="color:#B26A00;font-size:17px"></i>
+            <span class="flex-fill">Usar <strong>320 Moedas Shopee</strong> neste pedido (−R$ 3,20)</span>
+            <div class="form-check form-switch m-0">
+              <input class="form-check-input" type="checkbox" id="switchMoedas" onchange="recalcular()" aria-label="Usar moedas Shopee">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAGAMENTO -->
+      <section class="secao">
+        <div class="secao-topo">
+          <div class="ico"><i class="bi bi-credit-card-2-front-fill"></i></div>
+          <div>
+            <h2>Forma de pagamento</h2>
+            <div class="passo">Etapa 3 · você está aqui</div>
+          </div>
+        </div>
+        <div class="secao-corpo">
+          <button class="opcao ativa" type="button" data-pag="pix" onclick="escolherPagamento(this)">
+            <span class="marca"></span>
+            <i class="bi bi-qr-code icone-op"></i>
+            <span class="flex-fill">
+              <span class="rotulo">Pix</span>
+              <span class="detalhe">Aprovação em segundos</span>
+            </span>
+            <span class="selo-verde">5% de volta</span>
+          </button>
+
+          <button class="opcao" type="button" data-pag="cartao" onclick="escolherPagamento(this)">
+            <span class="marca"></span>
+            <i class="bi bi-credit-card icone-op"></i>
+            <span class="flex-fill">
+              <span class="rotulo">Cartão de crédito</span>
+              <span class="detalhe">Visa •••• 4821 · Ana Ribeiro</span>
+            </span>
+            <span class="text-secondary" style="font-size:12.5px">até 12x</span>
+          </button>
+
+          <div id="areaParcelas" class="mb-3" hidden>
+            <label for="selectParcelas" class="form-label" style="font-size:13px;font-weight:500">Em quantas vezes?</label>
+            <select id="selectParcelas" class="form-select" onchange="recalcular()"></select>
+          </div>
+
+          <button class="opcao" type="button" data-pag="boleto" onclick="escolherPagamento(this)">
+            <span class="marca"></span>
+            <i class="bi bi-upc-scan icone-op"></i>
+            <span class="flex-fill">
+              <span class="rotulo">Boleto bancário</span>
+              <span class="detalhe">Compensa em até 2 dias úteis</span>
+            </span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ MELHORIA 3 — RESUMO DISCRIMINADO ============ -->
+    <div class="col-lg-4">
+      <div class="resumo">
+        <section class="secao alvo" id="blocoResumo">
+          <div class="secao-topo">
+            <div class="ico"><i class="bi bi-receipt"></i></div>
+            <div><h2>Resumo do pagamento</h2><div class="passo">Cada valor explicado</div></div>
+          </div>
+          <div class="secao-corpo">
+            <span class="etiqueta-melhoria"><i class="bi bi-stars"></i> Melhoria 3 — valores discriminados</span>
+
+            <div class="grupo-titulo mt-0">Produtos</div>
+            <div class="grupo-resumo">
+              <div class="linha-resumo">
+                <span class="rot">Subtotal (<span id="txtItens">3</span> itens)</span>
+                <span class="val" id="vSubtotal">R$ 0,00</span>
+              </div>
+              <div class="linha-resumo desconto">
+                <span class="rot">Desconto da loja</span>
+                <span class="val" id="vDescLoja">− R$ 0,00</span>
+              </div>
+            </div>
+
+            <div class="grupo-titulo">Entrega</div>
+            <div class="grupo-resumo">
+              <div class="linha-resumo">
+                <span class="rot">Frete <span id="txtFrete">padrão</span></span>
+                <span class="val" id="vFrete">R$ 0,00</span>
+              </div>
+              <div class="linha-resumo desconto" id="linhaFreteGratis">
+                <span class="rot">Cupom de frete grátis</span>
+                <span class="val" id="vDescFrete">− R$ 0,00</span>
+              </div>
+            </div>
+
+            <div class="grupo-titulo">Cupons e moedas</div>
+            <div class="grupo-resumo">
+              <div class="linha-resumo desconto" id="linhaCupom">
+                <span class="rot">Cupom <span id="txtCupom">—</span></span>
+                <span class="val" id="vDescCupom">− R$ 0,00</span>
+              </div>
+              <div class="linha-resumo desconto" id="linhaMoedas" hidden>
+                <span class="rot">Moedas Shopee</span>
+                <span class="val">− R$ 3,20</span>
+              </div>
+              <div class="linha-resumo desconto" id="linhaPix" hidden>
+                <span class="rot">Desconto Pix (5%)</span>
+                <span class="val" id="vDescPix">− R$ 0,00</span>
+              </div>
+            </div>
+
+            <div class="grupo-titulo">Taxas</div>
+            <div class="grupo-resumo">
+              <div class="linha-resumo">
+                <span class="rot">
+                  Taxa de serviço
+                  <i class="bi bi-info-circle-fill info-ico" data-bs-toggle="tooltip"
+                     title="Cobrada pela Shopee para processar o pagamento e dar suporte ao pedido."></i>
+                </span>
+                <span class="val">R$ 2,00</span>
+              </div>
+              <div class="linha-resumo" id="linhaJuros" hidden>
+                <span class="rot">Juros do parcelamento
+                  <i class="bi bi-info-circle-fill info-ico" data-bs-toggle="tooltip"
+                     title="1,99% ao mês a partir de 7 parcelas."></i>
+                </span>
+                <span class="val" id="vJuros">R$ 0,00</span>
+              </div>
+            </div>
+
+            <div class="total-linha">
+              <span class="rot">Total</span>
+              <span class="val" id="vTotal" aria-live="polite">R$ 0,00</span>
+            </div>
+            <div class="text-secondary text-end mb-3" style="font-size:12.5px" id="txtParcela">no Pix, à vista</div>
+
+            <div class="economia">
+              <i class="bi bi-piggy-bank-fill" style="font-size:17px"></i>
+              <span>Você economiza <strong id="vEconomia">R$ 0,00</strong> neste pedido</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <p class="rodape">
+    Protótipo acadêmico de redesign · Atividade de UX · Tela de checkout Shopee<br>
+    Dados e produtos são fictícios, criados apenas para demonstração.
+  </p>
+</main>
+
+<!-- BARRA FIXA -->
+<div class="barra-fixa">
+  <div class="container container-app d-flex align-items-center gap-3">
+    <div class="d-none d-md-block">
+      <div class="text-secondary" style="font-size:12px">Total com descontos</div>
+      <div class="fw-bold" style="font-size:22px;color:var(--laranja)" id="totalBarra">R$ 0,00</div>
+    </div>
+    <div class="d-none d-lg-block text-secondary" style="font-size:12px;max-width:280px">
+      <i class="bi bi-shield-check"></i> Garantia Shopee: reembolso em até 7 dias se algo der errado.
+    </div>
+    <button class="btn-pedido ms-auto" type="button" id="btnPedido" onclick="fazerPedido()">
+      Fazer pedido
+    </button>
+  </div>
+</div>
+
+<button class="btn-melhorias" type="button" onclick="alternarDestaque()">
+  <i class="bi bi-eye-fill"></i> <span id="txtBotaoDestaque">Ver melhorias</span>
+</button>
+
+<div class="pilha-toast" id="pilhaToast" role="status" aria-live="polite"></div>
+
+<!-- MODAL CONFIRMAÇÃO -->
+<div class="modal fade" id="modalOk" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4 text-center p-4">
+      <div class="mx-auto mb-3 d-flex align-items-center justify-content-center"
+           style="width:74px;height:74px;border-radius:50%;background:var(--verde-claro);color:var(--verde);font-size:38px">
+        <i class="bi bi-check2"></i>
+      </div>
+      <h5 class="fw-bold">Pedido feito</h5>
+      <p class="text-secondary mb-1" style="font-size:14px">
+        Pagamento no <span id="okMetodo">Pix</span> · <strong id="okTotal">R$ 0,00</strong>
+      </p>
+      <p class="text-secondary" style="font-size:13px">
+        Código do pedido <strong>#250814-BR-7742</strong>. Acompanhe a entrega em "Minhas compras".
+      </p>
+      <button class="btn-pedido w-100 mt-2" type="button" data-bs-dismiss="modal">Acompanhar pedido</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* =======================================================
+   ESTADO
+======================================================= */
+const itens = [
+  { nome:'Carrinho de Bebê Compacto', de:699.90, por:489.90, qtd:1 },
+  { nome:'Kit 3 Mamadeiras Anticólica', de:79.90, por:79.90, qtd:2 }
+];
+
+const cupons = [
+  { cod:'FRETEGRATIS', tipo:'frete', valor:99,   min:79,  titulo:'Frete grátis',
+    sub:'Em pedidos acima de R$ 79 · válido até 31/08', auto:true },
+  { cod:'BEMVINDO15', tipo:'desconto', valor:0.15, teto:30, min:100, titulo:'15% de desconto',
+    sub:'Desconto máximo de R$ 30 · pedido mínimo R$ 100', auto:false },
+  { cod:'BABY10', tipo:'desconto', valor:10, min:50, titulo:'R$ 10 de desconto',
+    sub:'Exclusivo Baby Store Oficial · pedido mínimo R$ 50', auto:false },
+  { cod:'SUPER50', tipo:'desconto', valor:50, min:800, titulo:'R$ 50 de desconto',
+    sub:'Precisa de R$ 800 em produtos para liberar', auto:false }
+];
+
+let estado = {
+  frete: 24.90,
+  nomeFrete: 'padrão',
+  pagamento: 'pix',
+  parcelas: 1,
+  cupomFrete: null,
+  cupomDesconto: null,
+  taxaServico: 2.00
+};
+
+const brl = v => 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
+
+/* =======================================================
+   CÁLCULO — cada valor vira uma linha do resumo (Melhoria 3)
+======================================================= */
+function calcular(){
+  const subtotalCheio = itens.reduce((s,i)=> s + i.de * i.qtd, 0);
+  const subtotal      = itens.reduce((s,i)=> s + i.por * i.qtd, 0);
+  const descLoja      = subtotalCheio - subtotal;
+
+  let descFrete = 0;
+  if (estado.cupomFrete && subtotal >= estado.cupomFrete.min)
+    descFrete = Math.min(estado.frete, estado.cupomFrete.valor);
+
+  let descCupom = 0;
+  if (estado.cupomDesconto && subtotal >= estado.cupomDesconto.min){
+    const c = estado.cupomDesconto;
+    descCupom = c.valor < 1 ? Math.min(subtotal * c.valor, c.teto) : c.valor;
+  }
+
+  const moedas = document.getElementById('switchMoedas').checked ? 3.20 : 0;
+
+  let base = subtotal + estado.frete - descFrete - descCupom - moedas + estado.taxaServico;
+  base = Math.max(base, 0);
+
+  let descPix = 0, juros = 0;
+  if (estado.pagamento === 'pix'){
+    descPix = base * 0.05;
+  } else if (estado.pagamento === 'cartao' && estado.parcelas >= 7){
+    juros = base * 0.0199 * (estado.parcelas - 6);
+  }
+
+  const total = base - descPix + juros;
+  const economia = descLoja + descFrete + descCupom + moedas + descPix;
+
+  return { subtotalCheio, subtotal, descLoja, descFrete, descCupom, moedas, descPix, juros, total, economia };
+}
+
+function recalcular(){
+  const c = calcular();
+  const qtdTotal = itens.reduce((s,i)=> s + i.qtd, 0);
+
+  document.getElementById('txtItens').textContent   = qtdTotal;
+  document.getElementById('contadorItens').textContent = qtdTotal + (qtdTotal === 1 ? ' item' : ' itens');
+  document.getElementById('vSubtotal').textContent  = brl(c.subtotal);
+  document.getElementById('vDescLoja').textContent  = '− ' + brl(c.descLoja);
+  document.getElementById('vFrete').textContent     = estado.frete === 0 ? 'Grátis' : brl(estado.frete);
+  document.getElementById('txtFrete').textContent   = estado.nomeFrete.toLowerCase();
+  document.getElementById('vDescFrete').textContent = '− ' + brl(c.descFrete);
+  document.getElementById('vDescCupom').textContent = '− ' + brl(c.descCupom);
+  document.getElementById('txtCupom').textContent   = estado.cupomDesconto ? estado.cupomDesconto.cod : '—';
+  document.getElementById('vDescPix').textContent   = '− ' + brl(c.descPix);
+  document.getElementById('vJuros').textContent     = '+ ' + brl(c.juros);
+  document.getElementById('vTotal').textContent     = brl(c.total);
+  document.getElementById('totalBarra').textContent = brl(c.total);
+  document.getElementById('vEconomia').textContent  = brl(c.economia);
+
+  document.getElementById('linhaFreteGratis').hidden = c.descFrete === 0;
+  document.getElementById('linhaCupom').hidden       = c.descCupom === 0;
+  document.getElementById('linhaMoedas').hidden      = c.moedas === 0;
+  document.getElementById('linhaPix').hidden         = c.descPix === 0;
+  document.getElementById('linhaJuros').hidden       = c.juros === 0;
+
+  let rodape = 'no Pix, à vista';
+  if (estado.pagamento === 'cartao'){
+    const p = (c.total / estado.parcelas);
+    rodape = `${estado.parcelas}x de ${brl(p)} ${estado.parcelas >= 7 ? 'com juros' : 'sem juros'}`;
+  } else if (estado.pagamento === 'boleto'){
+    rodape = 'boleto à vista · vence em 3 dias';
+  }
+  document.getElementById('txtParcela').textContent = rodape;
+
+  const ativos = (estado.cupomFrete ? 1 : 0) + (estado.cupomDesconto ? 1 : 0);
+  const selo = document.getElementById('seloCupons');
+  selo.textContent = ativos === 0 ? 'nenhum ativo' : ativos + (ativos === 1 ? ' ativo' : ' ativos');
+
+  desenharCupons();
+  if (estado.pagamento === 'cartao') montarParcelas();
+}
+
+/* =======================================================
+   MELHORIA 1 — cupons na própria tela
+======================================================= */
+function desenharCupons(){
+  const subtotal = itens.reduce((s,i)=> s + i.por * i.qtd, 0);
+  const lista = document.getElementById('listaCupons');
+  lista.innerHTML = '';
+
+  cupons.forEach(c => {
+    const liberado = subtotal >= c.min;
+    const usado = (estado.cupomFrete && estado.cupomFrete.cod === c.cod) ||
+                  (estado.cupomDesconto && estado.cupomDesconto.cod === c.cod);
+
+    const valorLado = c.tipo === 'frete'
+      ? '<strong>FRETE</strong>GRÁTIS'
+      : (c.valor < 1 ? `<strong>${c.valor*100}%</strong>OFF` : `<strong>R$${c.valor}</strong>OFF`);
+
+    const botao = !liberado
+      ? `<span class="text-secondary" style="font-size:11.5px">Faltam ${brl(c.min - subtotal)}</span>`
+      : usado
+        ? `<button class="btn btn-sm btn-outline-secondary" type="button" onclick="removerCupom('${c.cod}')">Remover</button>`
+        : `<button class="btn btn-sm btn-danger fw-semibold" type="button" onclick="usarCupom('${c.cod}')">Usar</button>`;
+
+    lista.insertAdjacentHTML('beforeend', `
+      <div class="cupom ${c.tipo === 'frete' ? 'frete' : ''} ${usado ? 'usado' : ''} ${liberado ? '' : 'bloqueado'}">
+        <div class="lado">${valorLado}</div>
+        <div class="miolo">
+          <div class="t">${c.titulo} ${usado && c.auto ? '<span class="pill-auto"><i class="bi bi-magic"></i> aplicado automaticamente</span>' : ''}</div>
+          <div class="s">${c.sub}</div>
+        </div>
+        <div class="acao">${botao}</div>
+      </div>`);
+  });
+}
+
+function usarCupom(cod, silencioso){
+  const c = cupons.find(x => x.cod === cod);
+  if (!c) return notificar('erro','Cupom não encontrado','Confira o código e tente de novo.');
+
+  const subtotal = itens.reduce((s,i)=> s + i.por * i.qtd, 0);
+  if (subtotal < c.min)
+    return notificar('aviso','Cupom ainda não liberado',
+      `Adicione ${brl(c.min - subtotal)} em produtos para usar o ${c.cod}.`);
+
+  if (c.tipo === 'frete') estado.cupomFrete = c;
+  else estado.cupomDesconto = c;
+
+  recalcular();
+  const c2 = calcular();
+  const valor = c.tipo === 'frete' ? c2.descFrete : c2.descCupom;
+  if (!silencioso) notificar('ok','Cupom aplicado', `${c.cod} tirou ${brl(valor)} do seu total.`);
+  return valor;
+}
+
+function removerCupom(cod){
+  if (estado.cupomFrete && estado.cupomFrete.cod === cod) estado.cupomFrete = null;
+  if (estado.cupomDesconto && estado.cupomDesconto.cod === cod) estado.cupomDesconto = null;
+  recalcular();
+  notificar('aviso','Cupom removido', `O ${cod} saiu do pedido e o total foi recalculado.`);
+}
+
+function aplicarDigitado(){
+  const campo = document.getElementById('campoCupom');
+  const cod = campo.value.trim().toUpperCase();
+  if (!cod) return notificar('aviso','Digite um código','O campo de cupom está vazio.');
+  const existe = cupons.some(c => c.cod === cod);
+  if (!existe) return notificar('erro','Código inválido', `Não encontramos o cupom ${cod} para este pedido.`);
+  usarCupom(cod);
+  campo.value = '';
+}
+
+/* auto-aplicação do frete grátis assim que a tela abre */
+function autoAplicar(){
+  const c = cupons.find(x => x.auto);
+  const subtotal = itens.reduce((s,i)=> s + i.por * i.qtd, 0);
+  if (c && subtotal >= c.min && !estado.cupomFrete){
+    const valor = usarCupom(c.cod, true);
+    notificar('ok','Frete grátis aplicado automaticamente',
+      `Encontramos o cupom ${c.cod} e já tiramos ${brl(valor)} do seu frete.`);
+  }
+}
+
+/* =======================================================
+   SELEÇÕES
+======================================================= */
+function escolherFrete(btn){
+  document.querySelectorAll('[data-frete]').forEach(b => b.classList.remove('ativa'));
+  btn.classList.add('ativa');
+  estado.frete = parseFloat(btn.dataset.frete);
+  estado.nomeFrete = btn.dataset.nome;
+  document.getElementById('apoioEntrega').textContent = 'Entrega ' + btn.dataset.nome.toLowerCase();
+  recalcular();
+  notificar('ok','Entrega atualizada', `Você escolheu a entrega ${btn.dataset.nome.toLowerCase()}. O total foi recalculado.`);
+}
+
+function escolherPagamento(btn){
+  document.querySelectorAll('[data-pag]').forEach(b => b.classList.remove('ativa'));
+  btn.classList.add('ativa');
+  estado.pagamento = btn.dataset.pag;
+  const area = document.getElementById('areaParcelas');
+  area.hidden = estado.pagamento !== 'cartao';
+  estado.parcelas = 1;
+  if (estado.pagamento === 'cartao') montarParcelas();
+  recalcular();
+}
+
+function montarParcelas(){
+  const sel = document.getElementById('selectParcelas');
+  const escolhida = estado.parcelas;
+  estado.parcelas = 1;                 // base sempre sem juros
+  const base = calcular().total;
+  sel.innerHTML = '';
+  for (let n = 1; n <= 12; n++){
+    const jur = n >= 7 ? base * 0.0199 * (n - 6) : 0;
+    const tot = base + jur;
+    sel.insertAdjacentHTML('beforeend',
+      `<option value="${n}">${n}x de ${brl(tot/n)} ${n >= 7 ? '(com juros · total ' + brl(tot) + ')' : 'sem juros'}</option>`);
+  }
+  estado.parcelas = escolhida;
+  sel.value = escolhida;
+  sel.onchange = () => { estado.parcelas = parseInt(sel.value); recalcular(); };
+}
+
+function mudarQtd(i, delta){
+  const nova = itens[i].qtd + delta;
+  if (nova < 1) return notificar('aviso','Quantidade mínima','Para remover o item, use o botão excluir na sacola.');
+  if (nova > 5) return notificar('aviso','Limite por pedido','Máximo de 5 unidades do mesmo item.');
+  itens[i].qtd = nova;
+  document.getElementById('qtd' + i).textContent = nova;
+  recalcular();
+}
+
+/* =======================================================
+   FEEDBACK
+======================================================= */
+function notificar(tipo, titulo, texto){
+  const icone = tipo === 'ok' ? 'bi-check-circle-fill'
+              : tipo === 'aviso' ? 'bi-exclamation-triangle-fill' : 'bi-x-circle-fill';
+  const cor = tipo === 'ok' ? 'var(--verde)' : tipo === 'aviso' ? '#F5A623' : '#E53935';
+  const classe = tipo === 'ok' ? '' : tipo;
+
+  const el = document.createElement('div');
+  el.className = 'toast-ux ' + classe;
+  el.innerHTML = `<i class="bi ${icone}" style="color:${cor};font-size:19px"></i>
+                  <div><div class="fw-bold" style="font-size:13.5px">${titulo}</div>
+                  <div class="text-secondary" style="font-size:12.5px">${texto}</div></div>`;
+  document.getElementById('pilhaToast').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; setTimeout(()=>el.remove(), 300); }, 4200);
+}
+
+function fazerPedido(){
+  const btn = document.getElementById('btnPedido');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Confirmando pagamento…';
+
+  setTimeout(() => {
+    document.getElementById('etapa3').classList.replace('atual','feita');
+    document.getElementById('etapa4').classList.add('atual');
+    document.getElementById('etapa4').setAttribute('aria-current','step');
+    document.getElementById('etapa3').removeAttribute('aria-current');
+    document.getElementById('trilhoPreenchido').style.width = '100%';
+
+    const nomes = { pix:'Pix', cartao:'cartão de crédito', boleto:'boleto' };
+    document.getElementById('okMetodo').textContent = nomes[estado.pagamento];
+    document.getElementById('okTotal').textContent = brl(calcular().total);
+    new bootstrap.Modal('#modalOk').show();
+
+    btn.disabled = false;
+    btn.textContent = 'Fazer pedido';
+  }, 1400);
+}
+
+/* =======================================================
+   MODO APRESENTAÇÃO
+======================================================= */
+function alternarDestaque(){
+  document.body.classList.toggle('destacar');
+  const on = document.body.classList.contains('destacar');
+  document.getElementById('txtBotaoDestaque').textContent = on ? 'Ocultar melhorias' : 'Ver melhorias';
+  if (on){
+    notificar('ok','Modo apresentação',
+      'As três melhorias propostas estão destacadas: etapas, cupons e resumo.');
+    document.getElementById('blocoCupons').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+/* =======================================================
+   INÍCIO
+======================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
+  document.getElementById('trilhoPreenchido').style.width = '66%';
+  document.getElementById('blocoCupons').classList.add('alvo');
+  recalcular();
+  setTimeout(autoAplicar, 900);
+});
+</script>
+</body>
+</html>
