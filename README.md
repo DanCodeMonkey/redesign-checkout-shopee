@@ -21,6 +21,8 @@
 
 ## 💡 As 3 melhorias propostas
 
+🔗 **[Clique aqui para acessar o protótipo ao vivo](https://dancodemonkey.github.io/redesign-checkout-shopee/)**
+
 ### 1. Cupom resolvido dentro da própria tela
 Bloco **"Cupons e descontos"** com a lista de cupons disponíveis, campo para digitar código e **aplicação automática do frete grátis** assim que o pedido atinge o valor mínimo — com aviso na tela confirmando quanto foi descontado. Cupons ainda bloqueados mostram exatamente quanto falta.
 
